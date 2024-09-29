@@ -1,0 +1,559 @@
+{
+	"info": {
+		"_postman_id": "b19be4e8-05db-4747-af15-80b1e8f449ed",
+		"name": "Trello Copy",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "2779654-b19be4e8-05db-4747-af15-80b1e8f449ed"
+	},
+	"item": [
+		{
+			"name": "Tworzenie nowej tablicy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3c04214a-40af-44ba-9b20-174077282745",
+						"exec": [
+							"let resBody;\r",
+							"\r",
+							"pm.test(\"Should verify status code\", ()=>{\r",
+							"    pm.response.to.have.status(200)\r",
+							"    resBody = pm.response.json()\r",
+							"})\r",
+							"\r",
+							"pm.test(\"SHOULD VERIFY CREATED BOARD NAME\", ()=>{\r",
+							"    pm.expect(resBody.name).to.equal(pm.collectionVariables.get(\"boardName\"))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"SHOULD VERIFY RESPONSE ID\", ()=>{\r",
+							"    pm.expect(resBody.id.length).to.greaterThan(10)\r",
+							"    pm.collectionVariables.set(\"boardId\", resBody.id)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "fbc18a05-9cd9-4ca9-b909-bac85393b2ad",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://api.trello.com/1/boards/?name={{boardName}}&key={{key}}&token={{token}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"trello",
+						"com"
+					],
+					"path": [
+						"1",
+						"boards",
+						""
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "{{boardName}}"
+						},
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Pokazywanie listy tablic",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "063d36cd-411c-42f6-b905-677de9e3eef5",
+						"exec": [
+							"let resBody;\r",
+							"\r",
+							"pm.test(\"Should verify staus code\", () => {\r",
+							"    pm.response.to.have.status(200)\r",
+							"    resBody = pm.response.json()\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Should verify type of name\", ()=>{\r",
+							"    resBody.map(item =>{\r",
+							"        pm.expect(item.name).to.be.a(\"string\")\r",
+							"    })\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "3dfd306d-5707-4e38-9912-723c5b2b7848",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/members/me/boards?key={{key}}&token={{token}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"members",
+						"me",
+						"boards"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Tworzenie nowej listy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "12165c46-0469-4c96-9b5a-6e205d7ff2da",
+						"exec": [
+							"let resBody;\r",
+							"\r",
+							"pm.test(\"Should verify status code\", ()=>{\r",
+							"    pm.response.to.have.status(200)\r",
+							"    resBody = pm.response.json()\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Should verify list name\", ()=>{\r",
+							"    pm.expect(resBody.name).to.equal(pm.collectionVariables.get(\"listName\"))\r",
+							"})\r",
+							"\r",
+							"pm.collectionVariables.set(\"listID\", resBody.id)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "4fe6e917-eb2c-4b3a-9d38-123083a37f37",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/boards/{{boardId}}/lists?key={{key}}&token={{token}}&name={{listName}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"boards",
+						"{{boardId}}",
+						"lists"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "name",
+							"value": "{{listName}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Pokazywanie listy dostepnych list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4959ea10-ff49-4ba3-a55a-8a40e9bb02df",
+						"exec": [
+							"let resBody;\r",
+							"\r",
+							"pm.test(\"Should verify status code\", ()=>{\r",
+							"    pm.response.to.have.status(200)\r",
+							"    resBody = pm.response.json()\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Should verify closed valuse\", ()=>{\r",
+							"    resBody.map(item =>{\r",
+							"        pm.expect(item.closed).to.equal(false)\r",
+							"    })\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "b47399e6-7653-4928-b49f-f5ccc0559240",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/boards/66f1538d0f99ad97223722d3/lists?key={{key}}&token={{token}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"boards",
+						"66f1538d0f99ad97223722d3",
+						"lists"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Tworzenie nowej karty",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a9afd9d0-6338-4b5c-a822-ab82567cac2d",
+						"exec": [
+							"let resBody;\r",
+							"\r",
+							"pm.test(\"Should verify status code\", ()=>{\r",
+							"    pm.response.to.have.status(200)\r",
+							"    resBody = pm.response.json()\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Should verify value of id list and id board\", ()=>{\r",
+							"    pm.expect(resBody.idList).to.equal(pm.collectionVariables.get(\"listID\"))\r",
+							"    pm.expect(resBody.idBoard).to.equal(pm.collectionVariables.get(\"boardId\"))\r",
+							"})\r",
+							"\r",
+							"pm.collectionVariables.set(\"cardId\", resBody.id)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "a6888b6c-aac8-420a-8ade-e9f60266b620",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/cards?idList={{listID}}&key={{key}}&token={{token}}&name={{cardName}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"cards"
+					],
+					"query": [
+						{
+							"key": "idList",
+							"value": "{{listID}}"
+						},
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "name",
+							"value": "{{cardName}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Pokazywanie listy stworzonych kart",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5d8f901d-16ba-4483-a457-c350706d1ebf",
+						"exec": [
+							"pm.test(\"Should verify status code\", ()=>{\r",
+							"    pm.response.to.have.status(200)\r",
+							"}\r",
+							")"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "b581bfb0-beb5-4d87-9561-3d14419e51f1",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/boards/66f1538d0f99ad97223722d3/cards?key={{key}}&token={{token}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"boards",
+						"66f1538d0f99ad97223722d3",
+						"cards"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Aktualizacja karty",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bd12f7c3-65cf-43e8-9ae0-c910fe3d942a",
+						"exec": [
+							"let resBody;\r",
+							"pm.test(\"Should verify status code\", () =>{\r",
+							"    pm.response.to.have.status(200)\r",
+							"    resBody = pm.response.json()\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Should verify updated name value\", ()=>{\r",
+							"    pm.expect(resBody.name).to.equal(pm.collectionVariables.get(\"updateCardName\"))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Should verify updated desc value\", ()=>{\r",
+							"    pm.expect(resBody.desc).to.equal(pm.collectionVariables.get(\"updateCardDesc\"))\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "d93d9c44-c785-44ee-8348-6bfc076bc63d",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/cards/{{cardId}}?key={{key}}&token={{token}}&name={{updateCardName}}&desc={{updateCardDesc}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"cards",
+						"{{cardId}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "name",
+							"value": "{{updateCardName}}"
+						},
+						{
+							"key": "desc",
+							"value": "{{updateCardDesc}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Usuwanie karty",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ef7897d5-dec0-4565-9c0b-0c1f594aa3ac",
+						"exec": [
+							"pm.test(\"Should verify response status code\", ()=>{\r",
+							"    pm.response.to.have.status(200)\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "ea2c0895-7088-4eb4-9db4-c43bdd37e939",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/cards/{{cardId}}?key={{key}}&token={{token}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"cards",
+						"{{cardId}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "61439780-fecb-4918-9c4f-b5210a3abe16",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "0c4c2632-33b3-416e-945e-e7a341a50610",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "70d454b8-1385-4e89-bd6b-9944c619dc1e",
+			"key": "baseUrl",
+			"value": "https://api.trello.com/1",
+			"type": "string"
+		},
+		{
+			"id": "07f18110-e4b0-423a-9760-d1d1387ea859",
+			"key": "boardName",
+			"value": "Tablica z API1",
+			"type": "string"
+		},
+		{
+			"id": "88657215-6a25-4498-86c9-4fdbb4b19685",
+			"key": "boardId",
+			"value": ""
+		},
+		{
+			"id": "2bdf8a15-bb1d-485b-9214-2774e4cd9924",
+			"key": "listName",
+			"value": "testowa lista",
+			"type": "string"
+		},
+		{
+			"id": "6f95baf7-bbe6-4b78-b7a1-93186ab9589d",
+			"key": "listID",
+			"value": ""
+		},
+		{
+			"id": "5f8c74b1-5cf7-4dee-bb16-06819befd5d6",
+			"key": "cardName",
+			"value": "Nie dziala system logowania",
+			"type": "string"
+		},
+		{
+			"id": "5b84d8f7-71e8-42a0-bad8-b5e7250f0e0f",
+			"key": "cardId",
+			"value": ""
+		},
+		{
+			"id": "fa68648d-be3f-42fb-b272-ff430dfedf9f",
+			"key": "updateCardName",
+			"value": "Nie dziala system rejestracji",
+			"type": "string"
+		},
+		{
+			"id": "9f7d4044-b78a-4cd2-adc9-04f533e4af7f",
+			"key": "updateCardDesc",
+			"value": "Test Test",
+			"type": "string"
+		}
+	]
+}
